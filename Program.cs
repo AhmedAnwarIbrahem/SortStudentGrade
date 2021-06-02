@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SortStudentGrade
 {
@@ -10,15 +9,16 @@ namespace SortStudentGrade
     {
        public static void Main(string[] args)
         {
-            var students = GetStudents(10).ToList();
-            PrintStudents(students, "Random Students");
-            var orderedStudents = students.OrderByDescending(a => a.Degree).ToList();
-            PrintStudents(orderedStudents, "Sorted Students");
+            int noOfStudents = args != null && args.Length != 0 ? int.Parse(args[0]) : 10;
+            int noOfAllStudents = noOfStudents * 2;
+            var students = GetStudents(noOfAllStudents).ToList();
+            PrintStudents(students, $"Random {noOfStudents} Students");
+            var orderedStudents = students.OrderByDescending(a => a.Degree).Take(noOfStudents).ToList();
+            PrintStudents(orderedStudents, $"Top {noOfStudents} Students");
             int grouped = 1;
             var groupedStudents = orderedStudents.GroupBy(r => r.Degree).Select(group => new DegreesOrder
             {
                 Degree = group.Key,
-                //Students = students.Where(a=>a.Degree == group.Key).ToList(),
                 Count = group.Count(),
                 StudentsNames = string.Join(", ", students.Where(a => a.Degree == group.Key).Select(a=>a.Name).ToList()),
                 Order = grouped == 1 ? $"{grouped++}st" :
@@ -52,23 +52,23 @@ namespace SortStudentGrade
             });
             Console.WriteLine($"{res} \n");
         }
+
+        //Generate Random Students
         private static IEnumerable<Student> GetStudents(int nth)
         {
             var random = new Random();
             for (var i=0; i < nth; i++)
             {
-                var grade = random.Next(1,10);
-                var test = new Student()
+                var grade = random.Next(60,100);
+                var student = new Student()
                 {
                     Id = Guid.NewGuid(),
                     Name = GenerateRandomName(),
                     Degree = grade
                 };
-              yield return  test;
+              yield return student;
             }
         }
-
-
         private static string GenerateRandomName()
         {
             var personName = string.Empty;
@@ -84,15 +84,13 @@ namespace SortStudentGrade
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Degree { get; set; }
-        public string Grade { get; set; }
-
     }
 
     public class DegreesOrder
     {
         public string Order { get; set; }
         public int Degree { get; set; }
-        public string StudentsNames { get; set; }
         public int Count { get; set; }
+        public string StudentsNames { get; set; }
     }
 }
