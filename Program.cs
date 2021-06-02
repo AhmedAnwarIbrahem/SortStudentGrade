@@ -12,7 +12,7 @@ namespace SortStudentGrade
             int noOfStudents = args != null && args.Length != 0 ? int.Parse(args[0]) : 10;
             int noOfAllStudents = noOfStudents * 2;
             var students = GetStudents(noOfAllStudents).ToList();
-            PrintStudents(students, $"Random {noOfStudents} Students");
+            PrintStudents(students, $"Random {noOfAllStudents} Students");
             var orderedStudents = students.OrderByDescending(a => a.Degree).Take(noOfStudents).ToList();
             PrintStudents(orderedStudents, $"Top {noOfStudents} Students");
             int grouped = 1;
